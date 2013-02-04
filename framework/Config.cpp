@@ -82,19 +82,52 @@ void Config::init(std::string configPath)
         elemModule = elemModule->NextSiblingElement();
     }
     
+    //读取Log配置
+    TiXmlElement *elemLog = root->FirstChildElement("Log");
+    this->loadLogConf(elemLog);
 }
 
-int Config::moduleCount()
-{
-    return m_ModuleList.size();
-}
 
-const ModuleInfo* Config::getModuleInfo(int indexModule)
+
+void Config::loadLogConf(const TiXmlElement* elemLog)
 {
-    if (indexModule < 0 || indexModule >= m_ModuleList.size())
+    m_LogInfo.Debug = false;
+    m_LogInfo.Size = 5;
+    m_LogInfo.Backup = 10;
+    m_LogInfo.Path = "";
+
+    if (elemLog == NULL)
     {
-        return NULL;
+        return;
     }
 
-    return m_ModuleList[indexModule];
+    //debug属性存在并且等于true
+    if (elemLog->Attribute("debug") != NULL 
+        && ACE_OS::strcasecmp(elemLog->Attribute("debug"), "true") == 0)
+    {
+        m_LogInfo.Debug = true;
+    }
+
+    //size属性存在且在正常范围内
+    int value = 0;
+    if (elemLog->QueryIntAttribute("size", &value) == TIXML_SUCCESS
+        && value > 0 && value <= 10)
+    {
+        m_LogInfo.Size = value;
+    }
+
+    //backup属性存在并且在正常范围内
+    value = 0;
+    if (elemLog->QueryIntAttribute("backup", &value) != TIXML_SUCCESS
+        && value > 0 && value <= 20)
+        
+    {
+        m_LogInfo.Backup = value;
+    }
+
+    //path属性存在
+    if (elemLog->Attribute("path") != NULL)
+    {
+        m_LogInfo.Path = elemLog->Attribute("path");
+    }
 }

@@ -32,7 +32,7 @@ private:
     void initConfig();
 
 protected:
-    char m_AppName[20];
+    char m_AppName[255];
 };
 
 #endif // _POP_LIB_SERVICE_LINUXENTRANCE_H_

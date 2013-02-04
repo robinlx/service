@@ -150,6 +150,13 @@ void LinuxEntrance::serviceInit()
 
 void LinuxEntrance::run()
 {
+    //TODO:debug output
+    //Log config
+    cout << "---- Log config info----" << endl
+        << "Debug:" << SVR_CONF::instance()->getLogInfo()->Debug << endl
+        << "Size: " << SVR_CONF::instance()->getLogInfo()->Size << endl
+        << "Backup:" << SVR_CONF::instance()->getLogInfo()->Backup << endl
+        << "Path:  " << SVR_CONF::instance()->getLogInfo()->Path << endl;
     
     int i = 0;
     while (i++ < 100)
@@ -164,6 +171,7 @@ void LinuxEntrance::initPath()
     char workPath[256]; 
     //设置当前工作路径
     ACE_OS::strcpy(workPath, getenv("_"));
+    cout << "getenv: " << workPath << endl;
     if (workPath != NULL && ACE_OS::strstr(workPath, m_AppName) != NULL)
     {
         char *temp = ACE_OS::strrchr(workPath, '/');    
@@ -187,7 +195,6 @@ void LinuxEntrance::initConfig()
     try
     {
         SVR_CONF::instance()->init(m_ConfigPath);    
-        cout << SVR_CONF::instance()->moduleCount() << endl;
     }
     catch(ConfException &ex)
     {
