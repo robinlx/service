@@ -7,7 +7,7 @@
 //  @ Author : 
 //
 //
-
+#include "stdafx.h"
 #include "FileLog.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -20,7 +20,7 @@
 #include <dirent.h>
 #endif // WIN32
 
-#include "Define.h"
+#include "common/Define.h"
 #include <string.h>
 #include <iostream>
 using namespace std;
@@ -242,7 +242,7 @@ void FileLog::FlushBuffList()
 		size += (*iter)->str().size();
 
         //写满时开启新的文件
-		if (size >= m_FileSize)
+		if (size >= static_cast<unsigned int>(m_FileSize))
 		{
 			size = this->OpenFile();
 		}

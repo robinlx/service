@@ -24,11 +24,11 @@ typedef int EngineType;
 
 
 #ifdef WIN32
-#ifdef LOG_EXPORT
-#define LOGAPI __declspec(dllexport)
-#else
-#define LOGAPI __declspec(dllimport)
-#endif // LOG_EXPORT
+    #ifdef LOG_EXPORT
+        #define LOGAPI __declspec(dllexport)
+    #else
+        #define LOGAPI __declspec(dllimport)
+    #endif // LOG_EXPORT
 #else	//WIN32
 #define LOGAPI
 #endif	//WIN#@

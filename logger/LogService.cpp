@@ -10,7 +10,7 @@
 //	@ Version : 1.0.0.0
 //
 
-
+#include "stdafx.h"
 #include "LogService.h"
 
 LogService::LogService( void )

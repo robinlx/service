@@ -52,7 +52,7 @@ protected:
     void FlushBuffList();
 protected:
 	std::string		m_FileName;
-	unsigned long	m_FileSize;		//单位byte
+	long        	m_FileSize;		//单位byte
 	int				m_FileCount;	//备份日志文件数量
 	FILE*			m_LogFile;
     

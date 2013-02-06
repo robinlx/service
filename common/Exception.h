@@ -64,6 +64,10 @@ struct ExceptionSource
 };
 
 #define CURRENT_SOURCE ExceptionSource(__FUNCTION, __FILE__, __LINE__)
+inline ExceptionSource currentSource()
+{
+    return ExceptionSource(__FUNCTION, __FILE__, __LINE__);
+}
 
 class Exception
 {
@@ -131,7 +135,7 @@ public:
     : Exception(szMessage, src)
     {}
     
-    DerivedException(const std::string& msg, const ExceptionSource& src = CURRENT_SOURCE) 
+    DerivedException(const std::string& msg, const ExceptionSource& src = currentSource()) 
     : Exception(msg, src)
     {}
 };

@@ -1,4 +1,5 @@
 //#include <unistd.h>
+#include "stdafx.h"
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/stat.h>

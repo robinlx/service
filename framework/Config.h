@@ -68,7 +68,7 @@ int Config::moduleCount()
 
 const ModuleInfo* Config::getModuleInfo(int indexModule)
 {
-    if (indexModule < 0 || indexModule >= m_ModuleList.size())
+    if (indexModule < 0 || indexModule >= static_cast<int>(m_ModuleList.size()))
     {
         return NULL;
     }

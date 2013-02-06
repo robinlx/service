@@ -6,6 +6,9 @@
 //  服务入口类程序，用于分析程序参数，基本初始化等工作
 /////////////////////////////////////
 
+#ifndef WIN32
+
+#include "stdafx.h"
 #include "LinuxEntrance.h"
 #include <iostream>
 using std::cout;
@@ -201,3 +204,5 @@ void LinuxEntrance::initConfig()
         cout << "Exception: " <<  ex.message() << endl;
     }
 }
+
+#endif  //WIN32

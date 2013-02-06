@@ -1,10 +1,9 @@
 
 
-#if !defined(_POP_MYLIB_LOGGER_DLLMAIN_H_)
-#define _POP_MYLIB_LOGGER_DLLMAIN_H_
+
+#ifndef _COMTOM_V3_LOGGER_H_
+#define _COMTOM_V3_LOGGER_H_
 
 
 
-
-
-#endif	//_POP_MYLIB_LOGGER_DLLMAIN_H_
+#endif  //_COMTOM_V3_LOGGER_H_

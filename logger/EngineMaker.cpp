@@ -8,7 +8,8 @@
 // 
 // 
  
-#define LOG_EXPORT 
+
+#include "stdafx.h"
 #include "EngineMaker.h" 
 #include "LogEngine.h" 
 #include "LogService.h" 

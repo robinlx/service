@@ -6,6 +6,7 @@
 //  Service配置文件类，加载xml格式配置文件，作为全局单例。 
 /////////////////////////////////////
 
+#include "stdafx.h"
 #include "Config.h"
 #include <ace/OS.h>
 #include <iostream>

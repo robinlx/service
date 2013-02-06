@@ -1,4 +1,4 @@
-
+#include "stdafx.h"
 #include "ConsoleLog.h"
 #include <iostream>
 #include <time.h>
