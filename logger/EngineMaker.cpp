@@ -25,7 +25,8 @@ bool EngineMaker::MakeConsoleEngine(LevelsMask lvMask)
 	{ 
 		return false; 
 	} 
-	LOGSERVICE::instance()->InsertEngine(engine); 
+//	LOGSERVICE::instance()->InsertEngine(engine); 
+    g_Service.InsertEngine(engine);
 	return true; 
 } 
  
@@ -36,7 +37,8 @@ bool EngineMaker::MakeFileEngine( const std::string fileName, int fileSize, int 
 	{ 
 		return false; 
 	} 
-	LOGSERVICE::instance()->InsertEngine(engine); 
+//	LOGSERVICE::instance()->InsertEngine(engine); 
+    g_Service.InsertEngine(engine);
 	return true; 
 } 
  

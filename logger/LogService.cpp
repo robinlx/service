@@ -13,6 +13,8 @@
 #include "stdafx.h"
 #include "LogService.h"
 
+LogService g_Service;
+
 LogService::LogService( void )
 {
 

@@ -62,6 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\debug"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -215,6 +216,10 @@
 				RelativePath=".\WindowsEntrance.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\WinService.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Í·ÎÄ¼þ"
@@ -243,6 +248,10 @@
 			</File>
 			<File
 				RelativePath=".\WindowsEntrance.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WinService.h"
 				>
 			</File>
 		</Filter>

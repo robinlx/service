@@ -39,6 +39,7 @@ class Config
 {
 public:
     Config();
+    ~Config();
 
     void init(std::string configPath);
     inline int moduleCount();

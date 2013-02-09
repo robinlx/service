@@ -21,6 +21,18 @@ Config::Config()
     //Empty function
 }
 
+Config::~Config()
+{
+    //释放加载ModuleInfo指针
+    std::vector<ModuleInfo*>::iterator iter;
+    for(iter = m_ModuleList.begin(); iter != m_ModuleList.end(); /*empty*/)
+    {
+        ModuleInfo* temp = *iter;
+        delete temp;
+        iter = m_ModuleList.erase(iter);
+    }
+}
+
 void Config::init(std::string configPath)
 {
     std::stringstream stream;
@@ -119,7 +131,7 @@ void Config::loadLogConf(const TiXmlElement* elemLog)
 
     //backup属性存在并且在正常范围内
     value = 0;
-    if (elemLog->QueryIntAttribute("backup", &value) != TIXML_SUCCESS
+    if (elemLog->QueryIntAttribute("backup", &value) == TIXML_SUCCESS
         && value > 0 && value <= 20)
         
     {

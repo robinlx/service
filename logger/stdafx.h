@@ -19,5 +19,7 @@
 #define LOG_EXPORT 
 
 
+
+
 #endif  //_COMTOM_V3_LOGGER_STDAFX_H_
 

@@ -19,6 +19,7 @@ class LogEngine
 {
 public:
 	LogEngine(LevelsMask lvMask):m_LogLevels(lvMask) {};
+    virtual ~LogEngine() {};
 	
     virtual void WriteLog(const LogMsg& msg) = 0;
 

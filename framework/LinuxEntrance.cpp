@@ -6,15 +6,13 @@
 //  服务入口类程序，用于分析程序参数，基本初始化等工作
 /////////////////////////////////////
 
-#ifndef WIN32
+
 
 #include "stdafx.h"
+
+#ifndef WIN32
 #include "LinuxEntrance.h"
-#include <iostream>
-using std::cout;
-using std::endl;
 #include <string.h>
-#include <ace/OS.h>
 #include <ace/Get_Opt.h>
 #include "Config.h"
 
@@ -60,6 +58,10 @@ void LinuxEntrance::init(int argc, char **argv)
         case 'c':
             m_Config = true;
             m_ConfigPath = cmd.opt_arg();
+            if (m_ConfigPath.empty())
+            {
+                m_Help = true;
+            }
             break;
         default:
             m_Help = true;
@@ -183,10 +185,12 @@ void LinuxEntrance::initPath()
         ACE_OS::chdir(workPath);
     }
 
-    //设置配置文件路径
+    //设置配置文件路径,默认配置文件路径为工作路径的相对路径../conf/IPBCService.conf
     if (m_Config == false)
     {
-        ACE_OS::strcpy(workPath, getcwd(NULL, 0));    
+        ACE_OS::strcpy(workPath, getcwd(NULL, 0));  
+        char *tmp = ACE_OS::strrchr(workPath, '\\');
+        *tmp = '\0';
         m_ConfigPath = workPath;
         cout << m_ConfigPath << endl;
         m_ConfigPath += "/conf/IPBCService.conf";

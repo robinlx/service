@@ -33,7 +33,8 @@ protected:
 	EngineListType m_EngineList;
 };
 
-typedef ACE_Singleton<LogService, ACE_Mutex> LOGSERVICE;
+//typedef ACE_Singleton<LogService, ACE_Mutex> LOGSERVICE;
+extern LogService g_Service;
 
 #endif	//_COMTOM_V3_COMMON_LOGSERVICE_H_
 

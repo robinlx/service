@@ -19,7 +19,11 @@ IEntrance* CreateEntranceInstance();
 class IEntrance
 {
 protected:
-    IEntrance() {};
+    IEntrance()
+    {
+        m_Help = m_Debug = m_Config = false;
+        m_AppName[0] = '\0';
+    };
     ~IEntrance() {};
 
 public:
@@ -35,6 +39,7 @@ protected:
     bool m_Config;
 
     std::string m_ConfigPath;
+    char m_AppName[255];
 };
 
 #endif //_POP_LIB_SERVICE_IENTRANCE_H_

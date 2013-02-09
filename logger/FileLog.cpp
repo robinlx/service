@@ -35,16 +35,14 @@ FileLog::FileLog( const std::string& fileName, int fileSize, int fileCount, int 
 	base::m_Type = ENG_FILE;
     m_Buff = new std::stringstream;
 	m_ThreadSign = true;
-	ACE_Thread::spawn((ACE_THR_FUNC)ThreadFun, this, THR_NEW_LWP|THR_JOINABLE|THR_SUSPENDED, 0, &m_ThreadHandle);
+	
 }
 
 
 FileLog::~FileLog()
 {
-	ACE_Thread::resume(m_ThreadHandle);
-	//m_ThreadSign = false;
 	ACE_Thread::join(m_ThreadHandle);
-	
+	this->FlushBuffList(true);
 	
 	
 	if (m_LogFile)
@@ -73,25 +71,22 @@ void FileLog::WriteLog( const LogMsg& msg )
     {
         m_BuffList.push_back(m_Buff);
         m_Buff = new std::stringstream();
-		ACE_Thread::resume(m_ThreadHandle);
+		ACE_Thread::spawn((ACE_THR_FUNC)ThreadFun, this, THR_NEW_LWP|THR_JOINABLE, 0, &m_ThreadHandle);
     }
 
 	m_Mutex.release();
-
-	//FILE* pLogFile = OpenFile(LEV_ALL);
-	//if (pLogFile != NULL)
-	//{
-	//	fwrite(msg.LogStr().c_str(), msg.LogStr().size(), sizeof(char), pLogFile);
-	//}
 }
 
 unsigned int FileLog::OpenFile()
 {
+    this->makeFilePath();
+
 	if (m_LogFile == NULL)
 	{
 		m_LogFile = ACE_OS::fopen(m_FileName.c_str(), "a+t");
 	}
 
+    assert(m_LogFile != NULL);
 	//判断文件大小
 	unsigned int size = ACE_OS::ftell(m_LogFile);
  	if (size >= (unsigned)m_FileSize)
@@ -228,14 +223,13 @@ void* FileLog::ThreadFun(void* fileLog)
     return 0;
 }
     
-void FileLog::FlushBuffList()
+void FileLog::FlushBuffList(bool isAll /*= false*/)
 {
 	//获取文件大小
 	unsigned int size = this->OpenFile();
 	
-
     BuffList::iterator iter = m_BuffList.begin(); 
-    while(m_ThreadSign)
+    while(iter != m_BuffList.end())
     {
         //写入Log
 		fwrite((*iter)->str().c_str(), (*iter)->str().size(), sizeof(char), m_LogFile);
@@ -249,19 +243,39 @@ void FileLog::FlushBuffList()
 		
 		m_Mutex.acquire();
 		iter = m_BuffList.erase(iter);
-		if (iter == m_BuffList.end())
-		{
-			m_Mutex.release();
-			ACE_Thread::suspend(m_ThreadHandle);
-			iter = m_BuffList.begin(); 
-		}
-		else
-		{
-			m_Mutex.release();
-		}
+		m_Mutex.release();
     }
 
+    if (isAll)
+    {
+        m_Mutex.acquire();
+        fwrite(m_Buff->str().c_str(), m_Buff->str().size(), sizeof(char), m_LogFile);
+        m_Mutex.release();
+
+    }
+    
+
 }
+
+void FileLog::makeFilePath()
+{
+    std::string libpath = m_FileName;
+    if (_access_s(libpath.c_str(), 0) != 0)
+    {
+        std::string::size_type pos = libpath.find(PATH_SEPARATOR,3);
+        while(pos != std::string::npos)
+        {
+            ACE_OS::mkdir(libpath.substr(0, pos).c_str());
+// #ifdef WIN32
+//             mkdir(libpath.substr(0, pos).c_str());
+// #else 
+//             mkdir(libpath.substr(0, pos).c_str(), S_IRWXU|S_IRWXG|S_IROTH);
+// #endif
+            pos = libpath.find(PATH_SEPARATOR, pos + 1);
+        }
+    }
+}
+
 
 
 

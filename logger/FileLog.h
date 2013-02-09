@@ -44,12 +44,13 @@ public:
 	};
 
 protected:
+    void makeFilePath();
 	unsigned int OpenFile();
 	void DoRotate();
 	void BuildFileList(std::vector<_LOG_FileItem>* fileList, const std::string& dir, const std::string& filename);
 
     static void* ThreadFun(void* fileLog);
-    void FlushBuffList();
+    void FlushBuffList(bool isAll = false);
 protected:
 	std::string		m_FileName;
 	long        	m_FileSize;		//µ¥Î»byte

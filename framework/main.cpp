@@ -58,6 +58,7 @@ int main(int argc, char **argv)
     entrance->init(argc, argv);
     entrance->entry();
     ACE::fini();
+    getchar();
     exit(0);
     FILE *fp;
     

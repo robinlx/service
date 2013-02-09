@@ -9,6 +9,7 @@
 #ifndef _POP_LIB_SERVICE_LINUXENTRANCE_H_
 #define _POP_LIB_SERVICE_LINUXENTRANCE_H_
 
+
 #include "IEntrance.h"
 
 class LinuxEntrance
@@ -32,7 +33,7 @@ private:
     void initConfig();
 
 protected:
-    char m_AppName[255];
+    
 };
 
 #endif // _POP_LIB_SERVICE_LINUXENTRANCE_H_
