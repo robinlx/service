@@ -31,7 +31,11 @@ public:
     virtual void Close() = 0;
 
 protected:
+#ifdef WIN32
     typedef std::pair<IModule*, HINSTANCE> ModPair;
+#else
+    typedef std::pair<IModule*, void*> ModPair;
+#endif //WIN32
     std::vector<ModPair> m_ModList;
 };
 

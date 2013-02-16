@@ -24,7 +24,6 @@ class LinuxModuleMgr : public WinModuleMgr
 public:
 
     void Init();
-    void Open();
     void Close();
 
 };

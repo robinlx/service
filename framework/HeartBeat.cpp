@@ -14,7 +14,7 @@ HeartBeat::~HeartBeat(void)
 void HeartBeat::Start()
 {
 	ACE_Time_Value Delay(0);
-	ACE_Time_Value Inteval(10);
+	ACE_Time_Value Inteval(0, 100*1000);
 	ACE_Reactor::instance()->schedule_timer(this, NULL, Delay, Inteval);
 }
 
