@@ -14,16 +14,19 @@
 #if !defined(_LINUXDAEMON_H)
 #define _LINUXDAEMON_H
 
+#include "IDaemon.h"
 
 class LinuxDaemon 
+    : public IDaemon
 {
 public:
     LinuxDaemon();
-	void run();
+    virtual void Start();
+    virtual void Stop();
 
 private:
-    void loadModule();
     void initService();
+
 private:
 	volatile bool m_ThreadSign;
 };

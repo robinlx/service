@@ -18,7 +18,6 @@
 void Logger::Info( std::string msg, int logEngine /*= ENG_ALL*/ )
 {
     LogMsg log(msg, LEV_INFO, logEngine);
-//    LOGSERVICE::instance()->Write(log);
     g_Service.Write(log);
 
 }
@@ -26,13 +25,11 @@ void Logger::Info( std::string msg, int logEngine /*= ENG_ALL*/ )
 void Logger::Debug( std::string msg, int logEngine /*= ENG_ALL*/ )
 {
     LogMsg log(msg, LEV_DEBUG, logEngine);
-//    LOGSERVICE::instance()->Write(log);
     g_Service.Write(log);
 }
 
 void Logger::Error( std::string msg, int logEngine /*= ENG_ALL*/ )
 {
     LogMsg log(msg, LEV_ERROR, logEngine);
-//    LOGSERVICE::instance()->Write(log);
     g_Service.Write(log);
 }

@@ -11,6 +11,8 @@
 
 #include "IEntrance.h"
 
+class IDaemon;
+
 class WindowsEntrance :
     public IEntrance
 {
@@ -21,6 +23,7 @@ public:
 public:
     virtual void init(int argc, char **argv);
     virtual int entry();
+    virtual void exit();
 
 private:
     virtual void printUsage();
@@ -35,6 +38,8 @@ private:
     bool m_Start;
     bool m_Kill;
     bool m_Run;
+
+    IDaemon *m_Deamon;
 };
 
 #endif  //_POP_LIB_SERVICE_WINDOWSENTRANCE_H_

@@ -12,6 +12,9 @@
 
 #include "IEntrance.h"
 
+class IDaemon;
+
+
 class LinuxEntrance
     :public IEntrance
 {
@@ -23,6 +26,7 @@ public:
 public:
     void init(int argc, char **argv);
     int entry();
+    void exit();
 
 private:
     virtual void printUsage();
@@ -32,7 +36,7 @@ private:
     void initConfig();
     void initLog();
 protected:
-    
+    IDaemon *m_Deamon;
 };
 
 #endif // _POP_LIB_SERVICE_LINUXENTRANCE_H_

@@ -11,7 +11,7 @@
 #include "LinuxEntrance.h"
 #include "WindowsEntrance.h"
 
-IEntrance* CreateEntranceInstance()
+IEntrance* IEntrance::CreateInstance()
 {
 #ifdef WIN32
     return new WindowsEntrance;

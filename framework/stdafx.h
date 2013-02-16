@@ -16,8 +16,14 @@
 // TODO: 在此处引用程序需要的其他头文件
 #include <ace/OS.h>
 
+#include "Config.h"
 #include "logger/Logger.h"
 #include "common/Exception.h"
+
+#include <sstream>
+
+//////////////////////////////////////////////
+const char APP_NAME[] = "IPBCService";
 
 //////////////////////////////////////////////
 //TODO:编码时使用

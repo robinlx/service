@@ -9,13 +9,6 @@
 #ifndef _POP_LIB_SERVICE_IENTRANCE_H_
 #define _POP_LIB_SERVICE_IENTRANCE_H_
 
-#include <string>
-
-class IEntrance;
-
-IEntrance* CreateEntranceInstance();
-
-
 class IEntrance
 {
 protected:
@@ -26,7 +19,10 @@ protected:
     };
     ~IEntrance() {};
 
+    
 public:
+    static IEntrance* CreateInstance();
+
     virtual void init(int argc, char **argv) = 0;
     virtual int entry() = 0;
     virtual void exit() = 0;

@@ -177,7 +177,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Consoles.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\framework.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\HeartBeat.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\IDaemon.cpp"
 				>
 			</File>
 			<File
@@ -185,7 +197,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\IModuleMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LinuxDaemon.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\LinuxEntrance.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\LinuxModuleMgr.cpp"
 				>
 			</File>
 			<File
@@ -217,6 +241,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\WinModuleMgr.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\WinService.cpp"
 				>
 			</File>
@@ -231,11 +259,39 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Consoles.h"
+				>
+			</File>
+			<File
+				RelativePath=".\HeartBeat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IDaemon.h"
+				>
+			</File>
+			<File
 				RelativePath=".\IEntrance.h"
 				>
 			</File>
 			<File
+				RelativePath=".\IModule.h"
+				>
+			</File>
+			<File
+				RelativePath=".\IModuleMgr.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LinuxDaemon.h"
+				>
+			</File>
+			<File
 				RelativePath=".\LinuxEntrance.h"
+				>
+			</File>
+			<File
+				RelativePath=".\LinuxModuleMgr.h"
 				>
 			</File>
 			<File
@@ -248,6 +304,10 @@
 			</File>
 			<File
 				RelativePath=".\WindowsEntrance.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WinModuleMgr.h"
 				>
 			</File>
 			<File

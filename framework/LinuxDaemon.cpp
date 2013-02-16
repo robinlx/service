@@ -13,29 +13,37 @@
 #include "stdafx.h"
 #include "LinuxDaemon.h"
 
+#ifndef WIN32
+
+
 LinuxDaemon::LinuxDaemon()
 {
     m_ThreadSign = false;
 }
 
-void LinuxDaemon::run()
+void LinuxDaemon::Start()
 {
     this->initService();
 
-    this->loadModule();
-    
-    int i = 0;
-    while (i++ < 100)
-    {
-        char buf[255];
-        sprintf(buf, "log index %d", i);
-        Logger::Info(buf);
-        sleep(1);
-    }
+    stringstream stream;
+    stream << "Run " << APP_NAME << " with console.";
+    Logger::Info(stream.str());
+
+    this->openModuleMgr();
+
+    stream.str("");
+    stream << "Stop " << APP_NAME;
+    Logger::Info(stream.str());
 }
 
+void LinuxDaemon::Stop()
+{
+    m_ThreadSign = false;
+}
+
+/*
 void LinuxDaemon::loadModule()
-{/*
+{
 	m_ModMgr= IModuleMgr::CreateInstance();
 	if (m_ModMgr == NULL)
 	{
@@ -66,8 +74,9 @@ void LinuxDaemon::loadModule()
 	m_ModMgr->Close();
 	delete m_ModMgr;
 	m_ModMgr = NULL;
-    */
+    
 }
+}*/
 
 void LinuxDaemon::initService()
 {
@@ -79,8 +88,7 @@ void LinuxDaemon::initService()
     }
     else if (pid < 0)
     {
-        //fork失败
-        exit(1);
+        throw Exception("Failed to create subprocess");
     }
 
     //子进程继续运行
@@ -94,8 +102,6 @@ void LinuxDaemon::initService()
     }
     */
     
-
-//    chdir("/");
     umask(0);
 
     //TODO:网上抄的，具体效果不明确，先留着
@@ -109,9 +115,9 @@ void LinuxDaemon::initService()
     }
     else if (pid < 0)
     {
-        //fork失败
-        exit(1);
+        throw Exception("Failed to create subprocess");
     }
     */
 }
 
+#endif  //WIN32

@@ -9,15 +9,19 @@
 
 
 #include "stdafx.h"
-#include <ace/Get_Opt.h>
+
+
 #include "WindowsEntrance.h"
+#include <ace/Get_Opt.h>
 #include "Config.h"
 #include "logger/EngineMaker.h"
 #include "WinService.h"
+#include "IDaemon.h"
 
 WindowsEntrance::WindowsEntrance(void)
 {
     m_Insert = m_Remove = m_Start = m_Kill = m_Run = false;
+    m_Deamon = NULL;
 }
 
 WindowsEntrance::~WindowsEntrance(void)
@@ -40,7 +44,6 @@ void WindowsEntrance::init( int argc, char **argv )
     cmd.long_option(ACE_TEXT("start"), 's', ACE_Get_Opt::ARG_REQUIRED);
     cmd.long_option(ACE_TEXT("kill"), 'k', ACE_Get_Opt::ARG_REQUIRED);
     cmd.long_option(ACE_TEXT("debug"), 'd', ACE_Get_Opt::ARG_REQUIRED);
-    cmd.long_option(ACE_TEXT("config"), 'x', ACE_Get_Opt::ARG_REQUIRED);
     cmd.long_option(ACE_TEXT("config"), 'c', ACE_Get_Opt::ARG_REQUIRED);
     
     int opt = 0;
@@ -93,48 +96,91 @@ int WindowsEntrance::entry()
     }
 
     //初始化运行路径、配置文件路径等
-    this->initPath();
-
-    this->initConfig();
-
-    this->initLog();
-
-    //控制台运行
-    if (m_Debug)
+    try
     {
+        this->initPath();
+
+        this->initConfig();
+
+        this->initLog();
+    }
+    catch (Exception* e)
+    {
+        stringstream stream;
+        stream << "Initialize running environment invalidly." << std::endl
+            << e->message();
+        Logger::Error(stream.str());
+        Logger::Debug(e->tostr());
+    }
+    catch (...)
+    {
+        stringstream stream;
+        stream << "Initialize running environment invalidly with unknown exception." << std::endl;
+        Logger::Error(stream.str());
+    }
+    
+
+    try
+    {
+        //控制台运行
+        if (m_Debug)
+        {
+            m_Deamon = IDaemon::CreateInstance(IDaemon::SRV_Consoles);
+            m_Deamon->Start();
+            return 0;
+        }
+
+        m_Deamon = IDaemon::CreateInstance(IDaemon::SRV_Service);
+        if (m_Deamon == NULL)
+        {
+            throw Exception("Failed to create IDaemon object and IDaemon object is NULL");
+        }
+        //安装系统服务
+        if (m_Insert && !m_Remove)
+        {
+            m_Deamon->Setup();
+            return 0;
+        }
+
+        //移除系统服务
+        if (m_Remove && !m_Insert)
+        {
+            m_Deamon->Remove();
+            return 0;
+        }
+
+        //启动服务
+        if (m_Start && !m_Kill)
+        {
+            m_Deamon->Start();
+            return 0;
+        }
+
+        //停止服务
+        if (m_Kill && ! m_Start)
+        {
+            m_Deamon->Stop();
+            return 0;
+        }
         
+        //运行（系统启动服务时，由服务管理器调用）
+        if (m_Run)
+        {
+            m_Deamon->Run();
+            return 0;
+        }
     }
-
-    //安装系统服务
-    if (m_Insert && !m_Remove)
+    catch(Exception *e)
     {
-        SERVICE::instance()->Setup();
+        Logger::Error(e->message());
+        Logger::Debug(e->tostr());
+        return 3;
     }
-
-    //移除系统服务
-    if (m_Remove && !m_Insert)
+    catch(...)
     {
-        SERVICE::instance()->Remove();
+        Logger::Error("Run service failed with unknown exception");
+        return 3;
     }
-
-    //启动服务
-    if (m_Start && !m_Kill)
-    {
-        SERVICE::instance()->Start();
-    }
-
-    //停止服务
-    if (m_Kill && ! m_Start)
-    {
-        SERVICE::instance()->Stop();
-    }
-    
-    //运行（系统启动服务时，由服务管理器调用）
-    if (m_Run)
-    {
-        SERVICE::instance()->Run();
-    }
-    
 
 
     this->printUsage();
@@ -144,12 +190,12 @@ int WindowsEntrance::entry()
 
 void WindowsEntrance::printUsage()
 {
-    cout << "Usage: IPBCService [options]" << endl
+    cout << "Usage: " << APP_NAME << " [options]" << endl
         << "Run IPBC service with options" << endl
-        << "-i:\tInsert IPBCService into windows service manager;" << endl
-        << "-r:\tRemove IPBCService from windows service manager;" << endl
-        << "-s:\tStart IPBCService;" << endl
-        << "-k:\tKill/Stop IPBCService;" << endl
+        << "-i:\tInsert " << APP_NAME << " into windows service manager;" << endl
+        << "-r:\tRemove " << APP_NAME << " from windows service manager;" << endl
+        << "-s:\tStart " << APP_NAME << ";" << endl
+        << "-k:\tKill/Stop " << APP_NAME << ";" << endl
         << "-d:\tRun servece with debug mode;" << endl
         << "-c <ConfigFile>: Specified config file;" << endl
         << "-h:\tShow the help info and exit." << endl;
@@ -172,9 +218,9 @@ void WindowsEntrance::initPath()
         ACE_OS::strcpy(workPath, getcwd(NULL, 0));    
         char *tmp = ACE_OS::strrchr(workPath, '\\');
         *tmp = '\0';
-        m_ConfigPath = workPath;
-        cout << m_ConfigPath << endl;
-        m_ConfigPath += "\\conf\\IPBCService.conf";
+        char confPath[MAX_PATH] = {0};
+        ACE_OS::snprintf(confPath, MAX_PATH, "%s\\conf\\%s.conf", workPath, APP_NAME);
+        m_ConfigPath = confPath;
     }
 }
 
@@ -203,11 +249,17 @@ void WindowsEntrance::initLog()
         ACE_OS::strcpy(workPath, getcwd(NULL, 0));    
         char *tmp = ACE_OS::strrchr(workPath, '\\');
         *tmp = '\0';
-        logPath = workPath;
-        logPath += "//log//IPBCService.log";
+        char tmpLogPath[MAX_PATH] = {0};
+        ACE_OS::snprintf(tmpLogPath, MAX_PATH, "%s\\log\\%s.log", workPath, APP_NAME);
+        logPath = tmpLogPath;
     }
     
     EngineMaker::MakeFileEngine(logPath, 
         SVR_CONF::instance()->getLogInfo()->Size, 
         SVR_CONF::instance()->getLogInfo()->Backup, lv);
+}
+
+void WindowsEntrance::exit()
+{
+    m_Deamon->Stop();
 }

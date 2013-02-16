@@ -15,19 +15,16 @@
 #define _IPBC_2MUSE_CONSOLES_H_
 
 #include <ace/Event_Handler.h>
+#include "IDaemon.h"
 
-class Consoles : 
-    public ACE_Event_Handler
+class Consoles 
+    : public IDaemon
 {
 public:
 	Consoles();
-	virtual void run();
+	virtual void Start();
+    virtual void Stop();
 
-private:
-	int handle_signal(int signum, siginfo_t * /* = 0 */, ucontext_t * /* = 0 */);
-
-private:
-	volatile bool m_ThreadSign;
 };
 
 

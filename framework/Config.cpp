@@ -44,13 +44,13 @@ void Config::init(std::string configPath)
         throw ConfException(stream.str());
     }
     
-    //获取根节点"IPBCService"
+    //获取根节点APP_NAME
     TiXmlNode *root = NULL;
-    root = conf.FirstChild("IPBCService");
+    root = conf.FirstChild(APP_NAME);
     if (root == NULL)
     {
         stream.str("");
-        stream << "Failed to load \"IPBCService\" node from config file." << std::endl;
+        stream << "Failed to load \"" << APP_NAME << "\" node from config file." << std::endl;
         throw ConfException(stream.str());
     }
 
@@ -79,6 +79,8 @@ void Config::init(std::string configPath)
                 continue;
             }
 
+            info->Name = tmpName;
+            info->Library = tmpLibrary;
             const char *tmpConfig = elemModule->Attribute("config");
             if (tmpConfig != NULL)
             {

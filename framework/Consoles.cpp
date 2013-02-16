@@ -11,67 +11,29 @@
 */
 #include "stdafx.h"
 #include "Consoles.h"
-#include <ace/Reactor.h>
 
 
 Consoles::Consoles()
 {
 	m_ThreadSign = false;
-	//ACE_Reactor::instance()->register_handler(SIGINT, this);
 }
 
-void Consoles::run()
+void Consoles::Start()
 {
-    /*
-	m_ModMgr= IModuleMgr::CreateInstance();
-	if (m_ModMgr == NULL)
-	{
-		Logger::Error("IServiceMgr object is NULL.");
-		return;
-	}
+    stringstream stream;
+    stream << "Run " << APP_NAME << " with console.";
+    Logger::Info(stream.str());
 
-	try
-	{
-		if (m_ModMgr)
-		{
-			m_ModMgr->Init();
-			m_ModMgr->Open();
-		}
-		m_ThreadSign = true;
-		while (m_ThreadSign)
-		{
-			ACE_Time_Value timeout(0, 500*1000);
- 			ACE_Reactor::instance()->handle_events(timeout); 
-		}
-	}
-	catch (const Exception& ex)
-	{
-		Logger::Error(ex.message().c_str());
-	}
+    this->openModuleMgr();
 
-	Logger::Debug("Stop Service process.");
-	m_ModMgr->Close();
-	delete m_ModMgr;
-	m_ModMgr = NULL;
-    */
-    int i = 0;
-    m_ThreadSign = true;
-    while (m_ThreadSign)
-		{char buf[255];
-            sprintf(buf, "Consoles thread info %d", i++);
-            Logger::Info(buf);
-			ACE_Time_Value timeout(0, 500*1000);
- 			ACE_Reactor::instance()->handle_events(timeout); 
-		}
+    stream.str("");
+    stream << "Stop " << APP_NAME;
+    Logger::Info(stream.str());
 }
 
-int Consoles::handle_signal( int signum, siginfo_t * /* = 0 */, ucontext_t * /* = 0 */ )
+void Consoles::Stop()
 {
-	if (signum == SIGINT)
-	{
-		this->m_ThreadSign = false;
-	}
-	return 0;
+    m_ThreadSign = false;
 }
 
 

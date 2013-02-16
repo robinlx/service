@@ -42,9 +42,9 @@ public:
     ~Config();
 
     void init(std::string configPath);
-    inline int moduleCount();
-    inline const ModuleInfo* getModuleInfo(int indexModule);
-    inline const LogInfo* getLogInfo();
+    inline int moduleCount() const;
+    inline const ModuleInfo* getModuleInfo(int indexModule) const;
+    inline const LogInfo* getLogInfo() const;
 private:
     void loadLogConf(const TiXmlElement* elemLog);
 
@@ -57,17 +57,17 @@ typedef ACE_Singleton<Config, ACE_Mutex> SVR_CONF;
 
 /////////////////////////////////////////////
 //inline function
-const LogInfo* Config::getLogInfo()
+const LogInfo* Config::getLogInfo() const
 {
     return &m_LogInfo;
 }
 
-int Config::moduleCount()
+int Config::moduleCount() const
 {
     return m_ModuleList.size();
 }
 
-const ModuleInfo* Config::getModuleInfo(int indexModule)
+const ModuleInfo* Config::getModuleInfo(int indexModule) const
 {
     if (indexModule < 0 || indexModule >= static_cast<int>(m_ModuleList.size()))
     {

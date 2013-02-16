@@ -18,16 +18,14 @@
 
 #ifdef WIN32
 
-const char *ServerName = "IPBCService";
-
-ACE_NT_SERVICE_DEFINE (ServerName,
+ACE_NT_SERVICE_DEFINE (APP_NAME,
 					   WinService,
-					   ACE_TEXT (ServerName));
+					   ACE_TEXT (APP_NAME));
 
 WinService::WinService()
 {
 	ACE::init ();
-	this->name(ACE_TEXT (ServerName), ACE_TEXT (ServerName));
+	this->name(ACE_TEXT (APP_NAME), ACE_TEXT (APP_NAME));
 	m_ThreadSign = false;
 }
 
@@ -43,12 +41,10 @@ void WinService::Start()
 	{
 		char buf[1024];
 		ACE_OS::sprintf(buf, "Failed start service: %d, %s", GetLastError(), ACE_OS::dlerror());
-		Logger::Error(buf);
+		throw Exception(buf);
 	}
-	else
-	{
-		Logger::Info("Start service successful.");
-	}
+
+	Logger::Info("Start service successful.");
 }
 
 void WinService::Stop()
@@ -56,8 +52,8 @@ void WinService::Stop()
 	if (base::stop_svc() != 0)
 	{
 		char buf[1024];
-		ACE_OS::sprintf(buf, "Failed stop service: %s", ACE_OS::dlerror());
-		Logger::Error(buf);
+		ACE_OS::sprintf(buf, "Failed stop service: %d, %s", GetLastError(), ACE_OS::dlerror());
+		throw Exception(buf);
 	}
 }
 
@@ -68,18 +64,16 @@ void WinService::Setup()
 	if (0 == len)
 	{
 		char buf[1024];
-		ACE_OS::sprintf(buf, "Failed to get module path: %s", ACE_OS::dlerror());
-		Logger::Error(buf);
-		return;
+		ACE_OS::sprintf(buf, "Failed to get module path: %d, %s", GetLastError(), ACE_OS::dlerror());
+		throw Exception(buf);
 	}
 
     ACE_OS::strcat(exec_path, " -x");
 	if (base::insert(SERVICE_AUTO_START, SERVICE_ERROR_IGNORE, exec_path) != 0)
 	{
 		char buf[1024];
-		ACE_OS::sprintf(buf, "Failed to insert service: %s", ACE_OS::dlerror());
-		Logger::Error(buf);
-		return;
+		ACE_OS::sprintf(buf, "Failed to insert service: %d, %s", GetLastError(), ACE_OS::dlerror());
+		throw Exception(buf);
 	}
 
 	Logger::Info("Setup service successful.");
@@ -90,55 +84,20 @@ void WinService::Remove()
 	if (base::remove() != 0)
 	{
 		char buf[1024];
-		ACE_OS::sprintf(buf, "Failed remove service: %s", ACE_OS::dlerror());
-		Logger::Error(buf);
+		ACE_OS::sprintf(buf, "Failed remove service: %d, %s", GetLastError(), ACE_OS::dlerror());
+		throw Exception(buf);
 	}
-	else
-	{
-		Logger::Info("Remove service successful.");
-	}
+
+	Logger::Info("Remove service successful.");
+	
 }
 
 int WinService::svc(void)
 {
 	base::report_status(SERVICE_RUNNING);
-    while (m_ThreadSign)
-    {
-        ACE_Time_Value timeout(0, 500*1000);
-        ACE_OS::sleep(timeout);
-        Logger::Info("Service is running.");
-    }
-    /*
-	m_ModMgr= IModuleMgr::CreateInstance();
-	if (m_ModMgr == NULL)
-	{
-		Logger::Error("IServiceMgr object is NULL.");
-	}
 
-	try
-	{
-		if (m_ModMgr)
-		{
-			m_ModMgr->Init();
-			m_ModMgr->Open();
-			
-			while (m_ThreadSign)
-			{
-				ACE_Time_Value timeout(0, 500*1000);
-				ACE_Reactor::instance()->handle_events(timeout); 
-			}
-		}
-	}
-	catch (const Exception& ex)
-	{
-		Logger::Error(ex.message().c_str());
-	}
+    this->openModuleMgr();
 
-	Logger::Debug("Stop Service process.");
-	m_ModMgr->Close();
-	delete m_ModMgr;
-	m_ModMgr = NULL;
-    */
 	return 0;
 }
 
@@ -157,14 +116,13 @@ void WinService::handle_control( DWORD control_code )
 void WinService::Run()
 {
 	m_ThreadSign = true;
-	ACE_NT_SERVICE_RUN (ServerName,
-		SERVICE::instance(),
-		ret);
+	ACE_NT_SERVICE_RUN (APP_NAME, SERVICE::instance(), ret);
 	if (ret == 0)	//Failed to call
 	{
 		char buf[1024];
-		ACE_OS::sprintf(buf, "Failed to call service: %s,%d", ACE_OS::dlerror(),GetLastError());
-		Logger::Error(buf);
+		ACE_OS::sprintf(buf, "Failed to call service: %d, %s", 
+            GetLastError(), ACE_OS::dlerror());
+		throw Exception(buf);
 	}
 }
 

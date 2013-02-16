@@ -12,12 +12,11 @@
 
 #ifndef WIN32
 #include "LinuxEntrance.h"
-#include <string.h>
+
 #include <ace/Get_Opt.h>
 #include "Config.h"
 #include "logger/EngineMaker.h"
-#include "LinuxDaemon.h"
-#include "Consoles.h"
+#include "IDaemon.h"
 
 
 LinuxEntrance::LinuxEntrance()
@@ -75,33 +74,75 @@ void LinuxEntrance::init(int argc, char **argv)
 
 int LinuxEntrance::entry()
 {
-    if (m_Help == true)
+    if (m_Help)
     {
         this->printUsage();
-        return 1;
+        return 0;
     }
      
-    this->initPath();           //初始化路径信息
-    this->initConfig();         //初始化配置文件
-    this->initLog();
-    if (m_Debug == true)
+    //初始化运行路径、配置文件路径等
+    try
     {
-        cout << "Run with debug" << endl;
-        Consoles cmd;
-        cmd.run();
+        this->initPath();
+
+        this->initConfig();
+
+        this->initLog();
     }
-    else
+    catch (Exception* e)
     {
-        cout << "Run as service" << endl;
-        LinuxDaemon daemon;
-        daemon.run();
+        stringstream stream;
+        stream << "Initialize running environment invalidly." << std::endl
+            << e->message();
+        Logger::Error(stream.str());
+        Logger::Debug(e->tostr());
     }
-    return 0;
+    catch (...)
+    {
+        stringstream stream;
+        stream << "Initialize running environment invalidly with unknown exception." << std::endl;
+        Logger::Error(stream.str());
+    }
+
+    try
+    {
+        if (m_Debug)
+        {
+            m_Deamon = IDaemon::CreateInstance(IDaemon::SRV_Consoles);
+        }
+        else
+        {
+            m_Deamon = IDaemon::CreateInstance(IDaemon::SRV_Service);
+        }
+
+        if (m_Deamon == NULL)
+        {
+            throw Exception("Failed to create IDaemon object and IDaemon object is NULL");
+        }
+        
+        m_Deamon->Start();
+        return 0;
+    }
+    catch(Exception *e)
+    {
+        Logger::Error(e->message());
+        Logger::Debug(e->tostr());
+        return 3;
+    }
+    catch(...)
+    {
+        Logger::Error("Run service failed with unknown exception");
+        return 3;
+    }
+
+    this->printUsage();
+
+    return 2;
 }
 
 void LinuxEntrance::printUsage()
 {
-    cout << "Usage: IPBCService [options]" << endl
+    cout << "Usage: " << APP_NAME << " [options]" << endl
         << "Run IPBC service with options" << endl
         << "\t-d:\t\t\tRun servece with debug mode;" << endl
         << "\t-c <ConfigFile>:\tSpecified config file;" << endl
@@ -113,12 +154,10 @@ void LinuxEntrance::initPath()
     char workPath[256]; 
     //设置当前工作路径
     ACE_OS::strcpy(workPath, getenv("_"));
-    cout << "getenv: " << workPath << endl;
     if (workPath != NULL && ACE_OS::strstr(workPath, m_AppName) != NULL)
     {
         char *temp = ACE_OS::strrchr(workPath, '/');    
         *temp = '\0';
-        cout << "chdir: " << workPath << endl;
         ACE_OS::chdir(workPath);
     }
     else
@@ -132,9 +171,9 @@ void LinuxEntrance::initPath()
         ACE_OS::strcpy(workPath, getcwd(NULL, 0));  
         char *tmp = ACE_OS::strrchr(workPath, '/');
         *tmp = '\0';
-        m_ConfigPath = workPath;
-        cout << m_ConfigPath << endl;
-        m_ConfigPath += "/conf/IPBCService.conf";
+        char confPath[MAX_PATH] = {0};
+        ACE_OS::snprintf(confPath, MAX_PATH, "%s/conf/%s.conf", workPath, APP_NAME);
+        m_ConfigPath = confPath;
     }
 }
 
@@ -163,8 +202,9 @@ void LinuxEntrance::initLog()
         ACE_OS::strcpy(workPath, getcwd(NULL, 0));    
         char *tmp = ACE_OS::strrchr(workPath, '/');
         *tmp = '\0';
-        logPath = workPath;
-        logPath += "/log/IPBCService.log";
+        char tmpLogPath[MAX_PATH] = {0};
+        ACE_OS::snprintf(tmpLogPath, MAX_PATH, "%s/log/%s.log", workPath, APP_NAME);
+        logPath = tmpLogPath;
     }
     
     EngineMaker::MakeFileEngine(logPath, 
@@ -172,6 +212,13 @@ void LinuxEntrance::initLog()
         SVR_CONF::instance()->getLogInfo()->Backup, lv);
 
 }
+
+void LinuxEntrance::exit()
+{
+    m_Deamon->Stop();
+}
+
+
 #endif  //WIN32
 
 

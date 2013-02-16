@@ -35,6 +35,7 @@ FileLog::FileLog( const std::string& fileName, int fileSize, int fileCount, int 
 	base::m_Type = ENG_FILE;
     m_Buff = new std::stringstream;
 	m_ThreadSign = true;
+    this->OpenFile();
 	
 }
 
@@ -273,10 +274,8 @@ void FileLog::makeFilePath()
         std::string::size_type pos = libpath.find(PATH_SEPARATOR,3);
         while(pos != std::string::npos)
         {
-
-//            ACE_OS::mkdir(libpath.substr(0, pos).c_str());
 #ifdef WIN32
-            mkdir(libpath.substr(0, pos).c_str());
+            ACE_OS::mkdir(libpath.substr(0, pos).c_str());
 #else 
             mkdir(libpath.substr(0, pos).c_str(), S_IRWXU|S_IRWXG|S_IROTH);
 #endif
