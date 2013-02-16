@@ -86,7 +86,11 @@ unsigned int FileLog::OpenFile()
 		m_LogFile = ACE_OS::fopen(m_FileName.c_str(), "a+t");
 	}
 
-    assert(m_LogFile != NULL);
+    if (m_LogFile == NULL)
+    {
+        Logger::Error("Failed to open log file.");
+        return -1;
+    }
 	//判断文件大小
 	unsigned int size = ACE_OS::ftell(m_LogFile);
  	if (size >= (unsigned)m_FileSize)
@@ -227,6 +231,10 @@ void FileLog::FlushBuffList(bool isAll /*= false*/)
 {
 	//获取文件大小
 	unsigned int size = this->OpenFile();
+    if (size == -1)
+    {
+        return ;
+    }
 	
     BuffList::iterator iter = m_BuffList.begin(); 
     while(iter != m_BuffList.end())
@@ -260,17 +268,18 @@ void FileLog::FlushBuffList(bool isAll /*= false*/)
 void FileLog::makeFilePath()
 {
     std::string libpath = m_FileName;
-    if (_access_s(libpath.c_str(), 0) != 0)
+    if (ACE_OS::access(libpath.c_str(), 0) != 0)
     {
         std::string::size_type pos = libpath.find(PATH_SEPARATOR,3);
         while(pos != std::string::npos)
         {
-            ACE_OS::mkdir(libpath.substr(0, pos).c_str());
-// #ifdef WIN32
-//             mkdir(libpath.substr(0, pos).c_str());
-// #else 
-//             mkdir(libpath.substr(0, pos).c_str(), S_IRWXU|S_IRWXG|S_IROTH);
-// #endif
+
+//            ACE_OS::mkdir(libpath.substr(0, pos).c_str());
+#ifdef WIN32
+            mkdir(libpath.substr(0, pos).c_str());
+#else 
+            mkdir(libpath.substr(0, pos).c_str(), S_IRWXU|S_IRWXG|S_IROTH);
+#endif
             pos = libpath.find(PATH_SEPARATOR, pos + 1);
         }
     }

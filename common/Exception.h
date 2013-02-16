@@ -131,7 +131,7 @@ template <typename exception_tag>
 class DerivedException: public Exception, private exception_tag
 {
 public:
-    DerivedException(const char* szMessage, const ExceptionSource& src = CURRENT_SOURCE) 
+    DerivedException(const char* szMessage, const ExceptionSource& src = currentSource()) 
     : Exception(szMessage, src)
     {}
     

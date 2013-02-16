@@ -15,6 +15,9 @@
 #include <string.h>
 #include <ace/Get_Opt.h>
 #include "Config.h"
+#include "logger/EngineMaker.h"
+#include "LinuxDaemon.h"
+#include "Consoles.h"
 
 
 LinuxEntrance::LinuxEntrance()
@@ -24,7 +27,6 @@ LinuxEntrance::LinuxEntrance()
     base::m_Config = false;
     base::m_ConfigPath = "/usr/local/Comtom/conf/service.conf";
 }
-
 
 LinuxEntrance::~LinuxEntrance()
 {
@@ -81,16 +83,18 @@ int LinuxEntrance::entry()
      
     this->initPath();           //初始化路径信息
     this->initConfig();         //初始化配置文件
-
+    this->initLog();
     if (m_Debug == true)
     {
         cout << "Run with debug" << endl;
-        this->run();
+        Consoles cmd;
+        cmd.run();
     }
     else
     {
         cout << "Run as service" << endl;
-        this->serviceInit();
+        LinuxDaemon daemon;
+        daemon.run();
     }
     return 0;
 }
@@ -102,73 +106,6 @@ void LinuxEntrance::printUsage()
         << "\t-d:\t\t\tRun servece with debug mode;" << endl
         << "\t-c <ConfigFile>:\tSpecified config file;" << endl
         << "\t-h:\t\t\tShow the help info and exit." << endl;
-}
-
-void LinuxEntrance::serviceInit()
-{
-    int pid = fork();
-    //父进程退出
-    if (pid != 0)
-    {
-        exit(0);
-    }
-    else if (pid < 0)
-    {
-        //fork失败
-        exit(1);
-    }
-
-    //子进程继续运行
-    //创建新的会话组，子进程成为组长，并与控制终端分离
-    setsid();
-
-    /* 调试时不关闭
-    for(int i = 0; i < NOFILE; i++) // 关闭打开的文件描述符
-    {
-        close(i);
-    }
-    */
-    
-
-//    chdir("/");
-    umask(0);
-
-    //TODO:网上抄的，具体效果不明确，先留着
-    /*
-    //防止子进程获取控制终端
-    pid = fork();
-    //子进程退出
-    if (pid != 0)
-    {
-        exit(0);
-    }
-    else if (pid < 0)
-    {
-        //fork失败
-        exit(1);
-    }
-    */
-    
-    this->run();
-}
-
-
-void LinuxEntrance::run()
-{
-    //TODO:debug output
-    //Log config
-    cout << "---- Log config info----" << endl
-        << "Debug:" << SVR_CONF::instance()->getLogInfo()->Debug << endl
-        << "Size: " << SVR_CONF::instance()->getLogInfo()->Size << endl
-        << "Backup:" << SVR_CONF::instance()->getLogInfo()->Backup << endl
-        << "Path:  " << SVR_CONF::instance()->getLogInfo()->Path << endl;
-    
-    int i = 0;
-    while (i++ < 100)
-    {
-        cout << "pwd: " << getcwd(NULL,0) << endl;
-        sleep(1);
-    }
 }
 
 void LinuxEntrance::initPath()
@@ -184,12 +121,16 @@ void LinuxEntrance::initPath()
         cout << "chdir: " << workPath << endl;
         ACE_OS::chdir(workPath);
     }
+    else
+    {
+        throw Exception("Failed to init working path of service");
+    }
 
     //设置配置文件路径,默认配置文件路径为工作路径的相对路径../conf/IPBCService.conf
     if (m_Config == false)
     {
         ACE_OS::strcpy(workPath, getcwd(NULL, 0));  
-        char *tmp = ACE_OS::strrchr(workPath, '\\');
+        char *tmp = ACE_OS::strrchr(workPath, '/');
         *tmp = '\0';
         m_ConfigPath = workPath;
         cout << m_ConfigPath << endl;
@@ -199,14 +140,38 @@ void LinuxEntrance::initPath()
 
 void LinuxEntrance::initConfig()
 {
-    try
-    {
-        SVR_CONF::instance()->init(m_ConfigPath);    
-    }
-    catch(ConfException &ex)
-    {
-        cout << "Exception: " <<  ex.message() << endl;
-    }
+    SVR_CONF::instance()->init(m_ConfigPath);    
 }
 
+void LinuxEntrance::initLog()
+{
+    LevelsMask lv = LEV_INFO|LEV_ERROR;
+    if (SVR_CONF::instance()->getLogInfo()->Debug)
+    {
+        lv = lv | LEV_DEBUG;
+    }
+    
+    if (m_Debug)
+    {
+        EngineMaker::MakeConsoleEngine(lv);
+    }
+    
+    std::string logPath = SVR_CONF::instance()->getLogInfo()->Path;
+    if (logPath.empty())
+    {
+        char workPath[260]={0};
+        ACE_OS::strcpy(workPath, getcwd(NULL, 0));    
+        char *tmp = ACE_OS::strrchr(workPath, '/');
+        *tmp = '\0';
+        logPath = workPath;
+        logPath += "/log/IPBCService.log";
+    }
+    
+    EngineMaker::MakeFileEngine(logPath, 
+        SVR_CONF::instance()->getLogInfo()->Size, 
+        SVR_CONF::instance()->getLogInfo()->Backup, lv);
+
+}
 #endif  //WIN32
+
+

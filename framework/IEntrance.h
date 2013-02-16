@@ -29,7 +29,7 @@ protected:
 public:
     virtual void init(int argc, char **argv) = 0;
     virtual int entry() = 0;
-
+    virtual void exit() = 0;
 private:
     virtual void printUsage() = 0;
     

@@ -27,11 +27,10 @@ public:
 private:
     virtual void printUsage();
     void serviceInit();
-    void run();
 
     void initPath();
     void initConfig();
-
+    void initLog();
 protected:
     
 };

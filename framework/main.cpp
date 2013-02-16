@@ -17,6 +17,10 @@
 #pragma comment(lib, "aced.lib")
 #endif //WIN32
 
+void signHandle(int sign)
+{
+    cout << "Handle sigint" << endl;
+}
 
 void init_daemon()
 {
@@ -54,6 +58,7 @@ int main(int argc, char **argv)
 {
     
     ACE::init();
+//    signal(SIGINT,signHandle); 
     IEntrance *entrance = CreateEntranceInstance();
     entrance->init(argc, argv);
     entrance->entry();
