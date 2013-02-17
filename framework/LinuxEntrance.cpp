@@ -142,7 +142,8 @@ int LinuxEntrance::entry()
 
 void LinuxEntrance::printUsage()
 {
-    cout << "Usage: " << APP_NAME << " [options]" << endl
+    cout << "Application: " << APP_NAME << " Version: " << APP_VERSION << endl 
+        << "Usage: " << APP_NAME << " [options]" << endl
         << "Run IPBC service with options" << endl
         << "\t-d:\t\t\tRun servece with debug mode;" << endl
         << "\t-c <ConfigFile>:\tSpecified config file;" << endl

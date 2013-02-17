@@ -75,7 +75,7 @@ void WinModuleMgr::Init()
 
         try
         {
-            m_ModList[i].first->Init("");
+            pMod->Init("");
             m_ModList.push_back(ModPair(pMod, hLibInstance));
         }
         catch(Exception *e)

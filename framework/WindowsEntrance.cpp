@@ -190,7 +190,8 @@ int WindowsEntrance::entry()
 
 void WindowsEntrance::printUsage()
 {
-    cout << "Usage: " << APP_NAME << " [options]" << endl
+    cout << "Application: " << APP_NAME << " Version: " << APP_VERSION << endl 
+        << "Usage: " << APP_NAME << " [options]" << endl
         << "Run IPBC service with options" << endl
         << "-i:\tInsert " << APP_NAME << " into windows service manager;" << endl
         << "-r:\tRemove " << APP_NAME << " from windows service manager;" << endl

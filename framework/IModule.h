@@ -27,7 +27,7 @@ public:
 		pMod = NULL;
 	} 
 
-	virtual void Init(const string& workPath)	{};
+	virtual void Init(const string& workPath) = 0;
     virtual void Start() = 0;
     virtual void Stop() = 0;
 

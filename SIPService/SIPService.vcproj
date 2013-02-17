@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="logger"
-	ProjectGUID="{A39670FA-57F8-4B1F-B00D-E9024AD2C19C}"
-	RootNamespace="logger"
+	Name="SIPService"
+	ProjectGUID="{9DC6AFF2-385D-44B0-AD0F-E66DFBE20395}"
+	RootNamespace="SIPService"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -61,8 +61,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)\$(ProjectName)_d.dll"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="..\debug"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -116,7 +116,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOGGER_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;SIPSERVICE_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="2"
@@ -173,7 +173,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\ConsoleLog.cpp"
+				RelativePath=".\Config.cpp"
 				>
 			</File>
 			<File
@@ -199,19 +199,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\EngineMaker.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\FileLog.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Logger.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\LogService.cpp"
+				RelativePath=".\SIPService.cpp"
 				>
 			</File>
 			<File
@@ -234,6 +222,10 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\UserMgr.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Í·ÎÄ¼þ"
@@ -241,39 +233,31 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\ConsoleLog.h"
+				RelativePath=".\Config.h"
 				>
 			</File>
 			<File
-				RelativePath=".\DatabaseLog.h"
+				RelativePath=".\DllMain.h"
 				>
 			</File>
 			<File
-				RelativePath=".\EngineMaker.h"
+				RelativePath=".\IModule.h"
 				>
 			</File>
 			<File
-				RelativePath=".\FileLog.h"
+				RelativePath=".\IMsgHandle.h"
 				>
 			</File>
 			<File
-				RelativePath=".\LogEngine.h"
+				RelativePath=".\IUser.h"
 				>
 			</File>
 			<File
-				RelativePath=".\LogException.h"
+				RelativePath=".\IVRUser.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Logger.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LogMsg.h"
-				>
-			</File>
-			<File
-				RelativePath=".\LogService.h"
+				RelativePath=".\SIPService.h"
 				>
 			</File>
 			<File
@@ -282,6 +266,14 @@
 			</File>
 			<File
 				RelativePath=".\targetver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\User.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UserMgr.h"
 				>
 			</File>
 		</Filter>

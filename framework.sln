@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "framework", "framework\fram
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "logger", "logger\logger.vcproj", "{A39670FA-57F8-4B1F-B00D-E9024AD2C19C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SIPService", "SIPService\SIPService.vcproj", "{9DC6AFF2-385D-44B0-AD0F-E66DFBE20395}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{A39670FA-57F8-4B1F-B00D-E9024AD2C19C}.Debug|Win32.Build.0 = Debug|Win32
 		{A39670FA-57F8-4B1F-B00D-E9024AD2C19C}.Release|Win32.ActiveCfg = Release|Win32
 		{A39670FA-57F8-4B1F-B00D-E9024AD2C19C}.Release|Win32.Build.0 = Release|Win32
+		{9DC6AFF2-385D-44B0-AD0F-E66DFBE20395}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9DC6AFF2-385D-44B0-AD0F-E66DFBE20395}.Debug|Win32.Build.0 = Debug|Win32
+		{9DC6AFF2-385D-44B0-AD0F-E66DFBE20395}.Release|Win32.ActiveCfg = Release|Win32
+		{9DC6AFF2-385D-44B0-AD0F-E66DFBE20395}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

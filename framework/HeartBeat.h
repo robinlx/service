@@ -15,6 +15,7 @@ public:
 	HeartBeat(void);
 	~HeartBeat(void);
 
+    virtual void Init(const std::string& workPath) {};
 	virtual void Start();
 	virtual void Stop();
 
