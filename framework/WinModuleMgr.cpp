@@ -1,90 +1,3 @@
-<<<<<<< HEAD
-/**
-* Description
-*
-* Detail
-*
-* @project: ipbc_2Muse
-* @file : WinServiceMgr.cpp
-* @date : 2011-11-10
-* @author : Robin.L
-*
-*/
-
-#include "stdafx.h"
-#include "WinModuleMgr.h"
-
-#include "HeartBeat.h"
-
-
-void WinModuleMgr::Init()
-{
-    //³õÊ¼»¯HeartBeatÄ£¿é
-    this->initHeartBeat();
-
-#ifdef WIN32
-    typedef IModule* (__cdecl *CreateFun)(void); 
-    char libPath[MAX_PATH] = {0};
-	IModule* pMod = NULL;
-	HINSTANCE hLibInstance = NULL;
-	CreateFun pCreateFun = NULL;
-    const ModuleInfo *modInfo = NULL;
-    int moduleCount = SVR_CONF::instance()->moduleCount();
-	for (int i = 0; i < moduleCount; ++i)
-	{
-        modInfo = SVR_CONF::instance()->getModuleInfo(i);
-        if (modInfo == NULL)
-        {
-            char buf[255] = {0};
-            ACE_OS::snprintf(buf, 255, "Failed to get %dth module", i);
-            Logger::Error(buf);
-            continue;
-        }
-
-        ACE_OS::snprintf(libPath, MAX_PATH, "..\\lib\\%s", modInfo->Library.c_str());
-        hLibInstance = LoadLibrary(libPath);
-        if (hLibInstance == NULL)
-        {
-            stringstream stream;
-            stream << "Failed to load module: " << modInfo->Name << endl
-                << "Library: " << modInfo->Library << ", Config: " << modInfo->ConfigFile;
-            Logger::Error(stream.str());
-            continue;
-        }
-
-        pCreateFun = (CreateFun)GetProcAddress(hLibInstance, "CreateModule");
-        if (pCreateFun == NULL)
-        {
-            stringstream stream;
-            stream << "Failed to get module process: " << modInfo->Name << endl
-                << "Library: " << modInfo->Library << ", Config: " << modInfo->ConfigFile;
-            Logger::Error(stream.str());
-            FreeLibrary(hLibInstance);
-            continue;
-        }
-
-        pMod = pCreateFun();
-        if (pMod == NULL)
-        {
-            stringstream stream;
-            stream << "Failed to create module object: " << modInfo->Name << endl
-                << "Library: " << modInfo->Library << ", Config: " << modInfo->ConfigFile;
-            Logger::Error(stream.str());
-            FreeLibrary(hLibInstance);
-            continue;
-        }
-
-        try
-        {
-            pMod->Init("");
-            m_ModList.push_back(ModPair(pMod, hLibInstance));
-        }
-        catch(Exception *e)
-        {
-            stringstream stream;
-            stream << "Failed to init module: " << modInfo->Name << endl
-                << e->message();
-=======
 /** 
 * Description 
 * 
@@ -170,7 +83,6 @@ void WinModuleMgr::Init()
             stringstream stream; 
             stream << "Failed to init module: " << modInfo->Name << endl 
                 << e->message(); 
->>>>>>> c465e2c136919b19fbd99f0db8a07b8da0fb3f5b
             Logger::Error(stream.str());
             Logger::Debug(e->tostr()); 
         } 
