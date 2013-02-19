@@ -4,29 +4,29 @@
 //Date:     2013.2.7
 //Description:
 //  windows服务入口类程序，用于分析程序参数，基本初始化等工作,windows服务管理工作
-/////////////////////////////////////
-
-
-
+///////////////////////////////////// 
+ 
+ 
+ 
 #include "stdafx.h"
+#include "WindowsEntrance.h" 
 
-
-#include "WindowsEntrance.h"
-#include <ace/Get_Opt.h>
-#include "Config.h"
-#include "logger/EngineMaker.h"
-#include "WinService.h"
-#include "IDaemon.h"
-
-WindowsEntrance::WindowsEntrance(void)
-{
-    m_Insert = m_Remove = m_Start = m_Kill = m_Run = false;
-    m_Deamon = NULL;
-}
-
-WindowsEntrance::~WindowsEntrance(void)
-{
-}
+#ifdef WIN32
+#include <ace/Get_Opt.h> 
+#include "Config.h" 
+#include "logger/EngineMaker.h" 
+#include "WinService.h" 
+#include "IDaemon.h" 
+ 
+WindowsEntrance::WindowsEntrance(void) 
+{ 
+    m_Insert = m_Remove = m_Start = m_Kill = m_Run = false; 
+    m_Deamon = NULL; 
+} 
+ 
+WindowsEntrance::~WindowsEntrance(void) 
+{ 
+} 
 
 void WindowsEntrance::init( int argc, char **argv )
 {
@@ -89,10 +89,10 @@ void WindowsEntrance::init( int argc, char **argv )
 
 int WindowsEntrance::entry()
 {
-    if (m_Help)
-    {
-        this->printUsage();
-        return 0;
+    if (m_Help) 
+    { 
+        this->printUsage(); 
+        return 0; 
     }
 
     //初始化运行路径、配置文件路径等
@@ -204,8 +204,8 @@ void WindowsEntrance::printUsage()
 
 void WindowsEntrance::initPath()
 {
-    char workPath[MAX_PATH]={0};
-    //设置工作路径
+    char workPath[MAX_PATH]={0}; 
+    //设置工作路径 
     if (GetModuleFileName(GetModuleHandle(NULL), workPath, MAX_PATH) != 0)
     {
         char *tmp = ACE_OS::strrchr(workPath, '\\');
@@ -264,3 +264,6 @@ void WindowsEntrance::exit()
 {
     m_Deamon->Stop();
 }
+
+#endif //WIN32
+

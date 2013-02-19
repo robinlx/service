@@ -36,7 +36,7 @@ private:
     void initConfig();
     void initLog();
 protected:
-    IDaemon *m_Deamon;
+    IDaemon *m_Daemon;
 };
 
 #endif // _POP_LIB_SERVICE_LINUXENTRANCE_H_

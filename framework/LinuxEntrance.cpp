@@ -108,19 +108,19 @@ int LinuxEntrance::entry()
     {
         if (m_Debug)
         {
-            m_Deamon = IDaemon::CreateInstance(IDaemon::SRV_Consoles);
+            m_Daemon = IDaemon::CreateInstance(IDaemon::SRV_Consoles);
         }
         else
         {
-            m_Deamon = IDaemon::CreateInstance(IDaemon::SRV_Service);
+            m_Daemon = IDaemon::CreateInstance(IDaemon::SRV_Service);
         }
 
-        if (m_Deamon == NULL)
+        if (m_Daemon == NULL)
         {
             throw Exception("Failed to create IDaemon object and IDaemon object is NULL");
         }
         
-        m_Deamon->Start();
+        m_Daemon->Start();
         return 0;
     }
     catch(Exception *e)
@@ -172,8 +172,8 @@ void LinuxEntrance::initPath()
         ACE_OS::strcpy(workPath, getcwd(NULL, 0));  
         char *tmp = ACE_OS::strrchr(workPath, '/');
         *tmp = '\0';
-        char confPath[MAX_PATH] = {0};
-        ACE_OS::snprintf(confPath, MAX_PATH, "%s/conf/%s.conf", workPath, APP_NAME);
+        char confPath[260] = {0};
+        ACE_OS::snprintf(confPath, 260, "%s/conf/%s.conf", workPath, APP_NAME);
         m_ConfigPath = confPath;
     }
 }
@@ -203,8 +203,8 @@ void LinuxEntrance::initLog()
         ACE_OS::strcpy(workPath, getcwd(NULL, 0));    
         char *tmp = ACE_OS::strrchr(workPath, '/');
         *tmp = '\0';
-        char tmpLogPath[MAX_PATH] = {0};
-        ACE_OS::snprintf(tmpLogPath, MAX_PATH, "%s/log/%s.log", workPath, APP_NAME);
+        char tmpLogPath[260] = {0};
+        ACE_OS::snprintf(tmpLogPath, 260, "%s/log/%s.log", workPath, APP_NAME);
         logPath = tmpLogPath;
     }
     
@@ -216,7 +216,7 @@ void LinuxEntrance::initLog()
 
 void LinuxEntrance::exit()
 {
-    m_Deamon->Stop();
+    m_Daemon->Stop();
 }
 
 
