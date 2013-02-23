@@ -6,7 +6,8 @@
 //  @ Date : 2012/12/29
 //  @ Author : Robin.L
 //	@ Version : 1.0.0.0
-//
+//  @ Description
+//  日志引擎生成器
 //
 
 
@@ -16,6 +17,7 @@
 #include "Logger.h"
 #include <string>
 
+//日志引擎生成器类，用于生成日志引擎
 class LOGAPI EngineMaker
 {
 public:

@@ -16,7 +16,7 @@
 
 
 // TODO: 在此处引用程序需要的其他头文件
-#define LOG_EXPORT 
+#define LOG_EXPORT  //到处标志
 #include <assert.h>
 
 
